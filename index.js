@@ -1,19 +1,23 @@
-
 require('dotenv').config()
 
 const express = require('express')
 const app = express()
 
-const { createClient } = require('@supabase/supabase-js')
-const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
-
 app.use(express.json())
 
+// make connection to database 
+const supabase = require('./models/dbConnection')
+
+// get all books
 app.get('/', async(req, res) => {
-    const getBooks = await supabase.from('books').select()
+    const getBooks = await supabase
+        .from('books')
+        .select()
+        
     res.send(getBooks)
 })
 
+// post book
 app.post('/post', async(req, res) => {
     const userData = {
         title: req.body.title,
@@ -29,6 +33,7 @@ app.post('/post', async(req, res) => {
     res.send(insertBook)
 })
 
+// update book
 app.put('/post', async(req,res) => {
     const userData = {
         title: req.body.title,
@@ -45,6 +50,7 @@ app.put('/post', async(req,res) => {
     res.send(updateBook)
 })
 
+// delete book
 app.delete('/post', async(req, res) => {
     const deleteBook = await supabase
         .from('books')
